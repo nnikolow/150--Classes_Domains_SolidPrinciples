@@ -60,12 +60,15 @@ DATA SOURCE: JSON FILE
 '''
 SINK: POSTGRESQL
 '''
+
 connection = psycopg2.connect("dbname=db1 user=postgres password=postgres")
 cursor = connection.cursor()
 cursor.execute("set search_path to public")
 
+print("Opening file...\n")
 with open('json_template') as file:
     data = file.read()
+print("File successfully loaded... \n")
 query_sql = """
 insert into table1 select * from
 json_populate_recordset(NULL::table1, %s);
@@ -73,3 +76,4 @@ json_populate_recordset(NULL::table1, %s);
 
 cursor.execute(query_sql, (data,))
 connection.commit()
+print("File successfully loaded in database.")
