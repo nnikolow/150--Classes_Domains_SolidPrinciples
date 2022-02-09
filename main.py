@@ -6,15 +6,17 @@ import string
 import psycopg2
 
 '''
-DATA SOURCE : SIMULATION & FILE
+Data Source: Simulation and File
 '''
 
+
+# simulated random data
 
 class DataSource:
     def data_source_simulation(self):
         fake = Faker()
 
-    # random json generator
+        # random json generator
         def input_data(self):
             def rand_key():
                 num = str(random.randint(0, 10))
@@ -32,10 +34,7 @@ class DataSource:
         file = input_data("file")
         return file
 
-    '''
-    DATA SOURCE: JSON FILE
-    '''
-
+    # existing json file
     def data_source_json_file(self):
         def json_file():
             with open('json_template', encoding='utf-8', errors='ignore') as json_data:
@@ -50,7 +49,7 @@ class DataSource:
 
 
 '''
-SINK: POSTGRESQL
+Data Sink: Postgres
 '''
 
 
@@ -91,6 +90,10 @@ class DataSinkPostgres:
         except psycopg2.errors.InvalidParameterValue:
             print("Error in the JSON file -> reformat the file and try again.")
 
+
+'''
+Execution Logic
+'''
 
 while True:
     data_source = input("Hello, which data source do you want to use? \n Simulation (s) or File (f)?\n")
