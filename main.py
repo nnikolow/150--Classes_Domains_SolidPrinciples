@@ -126,7 +126,7 @@ while True:
                 p.file()
                 break
             else:
-                print("Choose an option for the sink between 'c' for Console and 'p' for Postgres")
+                print("Choose an option for the data sink between 'c' for Console and 'p' for Postgres")
         break
     else:
         print("Please, enter 's' for Simulation of 'f' for File!\n")
