@@ -20,11 +20,11 @@ class ETL:
         else:
             print("source:txt or json")
 
-    def dsink(self, sink):
-        if sink == "console":
-            return DataSink.console(sink)
-        elif sink == "file":
-            return DataSink.postgres(sink)
+    def dsink(self):
+        if self.sink == "console":
+            return DataSink.console(self.sink)
+        elif self.sink == "file":
+            return DataSink.postgres(self.sink)
         else:
             print("sink: console or postgres")
 
@@ -52,7 +52,7 @@ class DataSource(ETL):
 
     def data_source_json_file(self):
         def json_file():
-            with open(location, encoding='utf-8', errors='ignore') as json_data:
+            with open(self.location, encoding='utf-8', errors='ignore') as json_data:
                 data = json.load(json_data)
                 return data
 
@@ -64,13 +64,18 @@ class DataSource(ETL):
 
 
 class DataSink(ETL):
+    def __init__(self):
+        self.connection = psycopg2.connect("dbname=db1 user=postgres password=postgres")
+        self.cursor = self.connection.cursor()
+        self.cursor.execute("set search_path to public")
+
     def console(self):
-        print(ftype)
+        print(self.ftype)
 
     def postgres(self):
         try:
             print("Opening file...\n")
-            with open(location) as file:
+            with open(self.location) as file:
                 data = file.read()
 
             query_sql = """
@@ -90,5 +95,5 @@ Execution Logic
 '''
 
 x = ETL(ftype="file", location="C://Users/Nikolay.Nikolov2//PycharmProjects//pythonProject9", sink='console')
-print(x.source(ftype="file", location="C://Users/Nikolay.Nikolov2//PycharmProjects//pythonProject9"))
+print(x.sink())
 
