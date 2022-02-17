@@ -23,7 +23,7 @@ class ETL:
     def dsink(self):
         if self.sink == "console":
             return DataSink.console(self.sink)
-        elif self.sink == "file":
+        elif self.sink == "postgres":
             return DataSink.postgres(self.sink)
         else:
             print("sink: console or postgres")
@@ -96,5 +96,5 @@ Execution Logic
 '''
 
 x = ETL(ftype="file", location="C://Users/Nikolay.Nikolov2//PycharmProjects//pythonProject9", sink='console')
-print(x.sink())
+print(x.dsink())
 
