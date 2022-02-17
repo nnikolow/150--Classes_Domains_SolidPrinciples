@@ -64,7 +64,8 @@ class DataSource(ETL):
 
 
 class DataSink(ETL):
-    def __init__(self):
+    def __init__(self, ftype, location, sink):
+        super().__init__(ftype, location, sink)
         self.connection = psycopg2.connect("dbname=db1 user=postgres password=postgres")
         self.cursor = self.connection.cursor()
         self.cursor.execute("set search_path to public")
