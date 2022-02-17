@@ -20,11 +20,12 @@ class ETL:
         else:
             print("source:txt or json")
 
-    def dsink(self):
-        if self.sink == "console":
-            return DataSink.console(self.sink)
-        elif self.sink == "postgres":
-            return DataSink.postgres(self.sink)
+    def dsink(self, sink):
+        if sink == "console":
+            print("heyaa")
+            # return DataSource.DataSink.console(self.sink)
+        elif sink == "postgres":
+            return DataSource.DataSink.postgres(self.sink)
         else:
             print("sink: console or postgres")
 
@@ -62,33 +63,33 @@ class DataSource(ETL):
         x = json_file()
         return x
 
+    class DataSink(ETL):
+        def __init__(self, ftype, location, sink):
+            super().__init__(ftype, location, sink)
+            self.ftype = ftype
+            self.connection = psycopg2.connect("dbname=db1 user=postgres password=postgres")
+            self.cursor = self.connection.cursor()
+            self.cursor.execute("set search_path to public")
 
-class DataSink(ETL):
-    def __init__(self, ftype, location, sink):
-        super().__init__(ftype, location, sink)
-        self.connection = psycopg2.connect("dbname=db1 user=postgres password=postgres")
-        self.cursor = self.connection.cursor()
-        self.cursor.execute("set search_path to public")
+        def console(self):
+            return self.ftype
 
-    def console(self):
-        print(self.ftype)
+        def postgres(self):
+            try:
+                print("Opening file...\n")
+                with open(self.location) as file:
+                    data = file.read()
 
-    def postgres(self):
-        try:
-            print("Opening file...\n")
-            with open(self.location) as file:
-                data = file.read()
+                query_sql = """
+                insert into table1 select * from
+                json_populate_recordset(NULL::table1, %s);
+                """
 
-            query_sql = """
-            insert into table1 select * from
-            json_populate_recordset(NULL::table1, %s);
-            """
-
-            self.cursor.execute(query_sql, (data,))
-            self.connection.commit()
-            print("File successfully loaded! \n")
-        except psycopg2.errors.InvalidParameterValue:
-            print("Error in the JSON file -> reformat the file and try again.")
+                self.cursor.execute(query_sql, (data,))
+                self.connection.commit()
+                print("File successfully loaded! \n")
+            except psycopg2.errors.InvalidParameterValue:
+                print("Error in the JSON file -> reformat the file and try again.")
 
 
 '''
@@ -96,5 +97,6 @@ Execution Logic
 '''
 
 x = ETL(ftype="file", location="C://Users/Nikolay.Nikolov2//PycharmProjects//pythonProject9", sink='console')
-print(x.dsink())
+# print(x.ftype, x.location, x.sink)
+print(x.source(ftype="file", location='C:/Users/Nikolay.Nikolov2/PycharmProjects/pythonProject9/json_template').sink('console'))
 
